@@ -4,10 +4,10 @@ var utils = require('./utils.js')
 exports.Inputs =
   class Inputs {
     constructor () {
-      this.LEFT_ARROW = false
-      this.RIGHT_ARROW = false
-      this.UP_ARROW = false
-      this.DOWN_ARROW = false
+      this.A_KEY = false
+      this.D_KEY = false
+      this.W_KEY = false
+      this.S_KEY = false
     }
   }
 
@@ -78,10 +78,10 @@ exports.applySpeed = function (object, delta) {
 
 exports.applyInputsClamped = function (player, delta, accel, dampFactor, maxSpeed, boundaries) {
   let vInc = accel * delta
-  if (player.inputs.LEFT_ARROW) player.velocity.x -= vInc
-  if (player.inputs.RIGHT_ARROW) player.velocity.x += vInc
-  if (player.inputs.UP_ARROW) player.velocity.y -= vInc
-  if (player.inputs.DOWN_ARROW) player.velocity.y += vInc
+  if (player.inputs.A_KEY) player.velocity.x -= vInc
+  if (player.inputs.D_KEY) player.velocity.x += vInc
+  if (player.inputs.W_KEY) player.velocity.y -= vInc
+  if (player.inputs.S_KEY) player.velocity.y += vInc
 
   player.velocity.x = utils.clampAbs(player.velocity.x, maxSpeed)
   player.velocity.y = utils.clampAbs(player.velocity.y, maxSpeed)

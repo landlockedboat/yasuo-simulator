@@ -9,6 +9,7 @@ module.exports =
     }
 
     logic (delta) {
+      // COMMON BETWEEN SERVER AND CLIENT
       for (let playerId in this.players) {
         engine.applyInputsClamped(this.players[playerId],
           delta,
@@ -48,12 +49,31 @@ module.exports =
       this.players[playerId] = player
     }
 
-    onCreateTornado (playerId, tornadoPos, tornadoSpeed) {
+    onAttack (playerId, attackInputs, playerPos, mousePos) {
       var player = this.players[playerId]
-      // a tornado holds a position
+      if (attackInputs.Q_KEY) {
+        if (player.reloadingTime <= 0) {
+          player.reloadingTime = constants.RELOADING_TIME
+          this.onCreateTornado(playerId, playerPos, mousePos)
+        }
+      }
+      this.players[playerId] = player
+    }
+
+    onCreateTornado (playerId, playerPos, mousePos) {
+      // We get the vector from playerPos to mousePos
+      var tornadoSpeed = engine.vectorBetween(playerPos, mousePos)
+      console.log(tornadoSpeed)
+      // And we normalize it
+      tornadoSpeed = engine.vectorNormalize(tornadoSpeed)
+      // And multiply it by the tornado speed
+      tornadoSpeed = engine.vectorTimes(tornadoSpeed, constants.TORNADO_SPEED)
+
+      var player = this.players[playerId]
+      // creating the actual tornado...
       player.tornados.push({
         velocity: tornadoSpeed,
-        pos: new engine.Vector(tornadoPos.x, tornadoPos.y)
+        pos: new engine.Vector(playerPos.x, playerPos.y)
       })
       this.players[playerId] = player
     }

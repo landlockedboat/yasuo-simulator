@@ -5,6 +5,10 @@ const kbd = require('@dasilvacontin/keyboard')
 // we need to add a couple keys to @dasilvacontin's keyboard package!
 kbd.Q_KEY = 81
 kbd.R_KEY = 82
+kbd.W_KEY = 87
+kbd.A_KEY = 65
+kbd.S_KEY = 83
+kbd.D_KEY = 68
 
 const deepEqual = require('deep-equal')
 // local requires
