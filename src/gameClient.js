@@ -14,6 +14,9 @@ module.exports =
           constants.MAX_SPEED,
           constants.MAP_BOUNDARIES
         )
+        this.players[playerId].tornados.forEach((tornado) => {
+          engine.applySpeed(tornado, delta, constants.MAP_BOUNDARIES)
+        })
       }
     }
   }

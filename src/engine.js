@@ -24,7 +24,6 @@ exports.Vector =
 exports.GameObject =
   class GameObject {
     constructor (id, x = 0, y = 0) {
-      console.log(`${x}, ${y}`)
       this.id = id
       this.pos = new exports.Vector(x, y)
     }
@@ -33,7 +32,6 @@ exports.GameObject =
 exports.PlayerObject =
   class PlayerObject extends exports.GameObject {
     constructor (id, x, y) {
-      console.log(`${x}, ${y}`)
       super(id, x, y)
       // velocity
       this.velocity = new exports.Vector(0, 0)
@@ -67,8 +65,14 @@ exports.applyInputsClamped = function (player, delta, accel, maxSpeed, boundarie
   }
 }
 
-// visuals
-exports.Sprite =
-  class Sprite {
-
+exports.applySpeed = function (object, delta, boundaries) {
+  object.pos.x += object.velocity.x * delta
+  object.pos.y += object.velocity.y * delta
+  if (utils.isClamped(object.pos.x, 0, boundaries.x)) {
+    return false
   }
+  if (utils.isClamped(object.pos.y, 0, boundaries.y)) {
+    return false
+  }
+  return true
+}

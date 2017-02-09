@@ -14,6 +14,9 @@ const socket = io()
 var game = new GameClient()
 // init the renderer
 var renderer = new GameRenderer()
+// and add a reference to the on onClick callback
+// for when we click on the canvas
+renderer.registerOnClickCallback(onClick)
 
 var gameStarted = false
 let myPlayerId = null
@@ -64,6 +67,10 @@ socket.on('connect', function () {
     game.players = players
   })
 })
+
+function onClick (event) {
+  socket.emit('player:click', renderer.mousePos)
+}
 
 function updateInputs () {
   const oldInputs = Object.assign({}, myInputs)

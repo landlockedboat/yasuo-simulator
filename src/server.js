@@ -6,6 +6,7 @@ var io = require('socket.io')(http)
 // local requires
 const GameServer = require('./gameServer.js')
 const constants = require('./constants.js')
+// const engine = require('./engine.js')
 
 const game = new GameServer()
 // rooting to public folder
@@ -44,6 +45,20 @@ io.on('connection', function (socket) {
   socket.on('disconnect', () => {
     game.onPlayerDisconnected(socket.id)
     socket.broadcast.emit('game.players:update', game.players)
+  })
+
+  socket.on('player:click', (mousePos) => {
+    var playerPos = game.players[socket.id].pos
+    // We get the vector from playerPos to mousePos
+    // var tornadoSpeed = engine.vectorBetween(playerPos, mousePos)
+    // And we normalize it
+    // tornadoSpeed = engine.vectorNormalize(tornadoSpeed)
+    // And multiply it by the tornado speed
+    // tornadoSpeed = engine.vectorTimes(tornadoSpeed, constants.TORNADO_SPEED)
+    // var tornado = game.createTornado(playerPos, tornadoSpeed)
+    game.onCreateTornado(socket.id, playerPos)
+    io.sockets.emit('player:update', game.players[socket.id])
+    console.log('hasagi!')
   })
 })
 
