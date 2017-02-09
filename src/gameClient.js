@@ -11,6 +11,7 @@ module.exports =
         engine.applyInputsClamped(this.players[playerId],
           delta,
           constants.ACCEL,
+          constants.DAMP_FACTOR,
           constants.MAX_SPEED,
           constants.MAP_BOUNDARIES
         )

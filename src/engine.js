@@ -41,7 +41,17 @@ exports.PlayerObject =
     }
   }
 
-exports.applyInputsClamped = function (player, delta, accel, maxSpeed, boundaries) {
+exports.vectorDamp = function (vector, dampFactor) {
+  vector.x *= dampFactor
+  vector.y *= dampFactor
+}
+
+exports.applySpeed = function (object, delta) {
+  object.pos.x += object.velocity.x * delta
+  object.pos.y += object.velocity.y * delta
+}
+
+exports.applyInputsClamped = function (player, delta, accel, dampFactor, maxSpeed, boundaries) {
   let vInc = accel * delta
   if (player.inputs.LEFT_ARROW) player.velocity.x -= vInc
   if (player.inputs.RIGHT_ARROW) player.velocity.x += vInc
@@ -51,8 +61,9 @@ exports.applyInputsClamped = function (player, delta, accel, maxSpeed, boundarie
   player.velocity.x = utils.clampAbs(player.velocity.x, maxSpeed)
   player.velocity.y = utils.clampAbs(player.velocity.y, maxSpeed)
 
-  player.pos.x += player.velocity.x * delta
-  player.pos.y += player.velocity.y * delta
+  exports.applySpeed(player, delta)
+  // we damp the speed of the player
+  exports.vectorDamp(player.velocity, dampFactor)
 
   player.pos.x = utils.clamp(player.pos.x, 0, boundaries.x)
   player.pos.y = utils.clamp(player.pos.y, 0, boundaries.y)
@@ -63,16 +74,4 @@ exports.applyInputsClamped = function (player, delta, accel, maxSpeed, boundarie
   if (utils.isClamped(player.pos.y, 0, boundaries.y)) {
     player.velocity.y = 0
   }
-}
-
-exports.applySpeed = function (object, delta, boundaries) {
-  object.pos.x += object.velocity.x * delta
-  object.pos.y += object.velocity.y * delta
-  if (utils.isClamped(object.pos.x, 0, boundaries.x)) {
-    return false
-  }
-  if (utils.isClamped(object.pos.y, 0, boundaries.y)) {
-    return false
-  }
-  return true
 }
