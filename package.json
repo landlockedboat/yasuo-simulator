@@ -31,7 +31,6 @@
   "dependencies": {
     "@dasilvacontin/keyboard": "^1.0.2",
     "express": "^4.14.1",
-    "pixi.js": "^4.3.4",
     "socket.io": "^1.7.2"
   }
 }
