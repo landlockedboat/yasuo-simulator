@@ -68,6 +68,10 @@ socket.on('connect', function () {
     gameStarted = true
   })
 
+  socket.on('game.tornados:update', (tornados) => {
+    game.tornados = tornados
+  })
+
   socket.on('player:update', (player) => {
     game.players[player.id] = player
   })

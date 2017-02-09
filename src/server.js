@@ -50,10 +50,16 @@ io.on('connection', function (socket) {
   socket.on('player:attack', (attackInputs, mousePos) => {
     var playerPos = game.players[socket.id].pos
     game.onAttack(socket.id, attackInputs, playerPos, mousePos)
-    // game.onCreateTornado(socket.id, playerPos, mousePos)
+    io.sockets.emit('game.tornados:update', game.tornados)
     io.sockets.emit('player:update', game.players[socket.id])
   })
 })
+
+function tornadoLogic (delta) {
+  // for (playerId in game.players){
+  //   var player = game.players[playerId]
+  // }
+}
 
 let past = Date.now()
 setInterval(function () {
@@ -63,6 +69,9 @@ setInterval(function () {
   past = now
   // execute the logic loop
   game.logic(delta)
+  // Becuase this last bit uses sockets intensively,
+  // we execute it otside the server class entirely
+  tornadoLogic(delta)
 }, 20)
 
 // Listen on environment variable PORT

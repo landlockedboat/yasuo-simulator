@@ -6,6 +6,7 @@ module.exports =
   class GameServer {
     constructor () {
       this.players = {}
+      this.tornados = []
     }
 
     logic (delta) {
@@ -21,10 +22,10 @@ module.exports =
         var reloadingTime = this.players[playerId].reloadingTime
         reloadingTime -= delta
         this.players[playerId].reloadingTime = utils.clamp(reloadingTime, 0, constants.RELOADING_TIME)
-        this.players[playerId].tornados.forEach((tornado) => {
-          engine.applySpeed(tornado, delta, constants.MAP_BOUNDARIES)
-        })
       }
+      this.tornados.forEach((tornado) => {
+        engine.applySpeed(tornado, delta, constants.MAP_BOUNDARIES)
+      })
     }
 
     onPlayerConnected (playerId, x, y) {
@@ -33,7 +34,6 @@ module.exports =
         x,
         y
       )
-      player.tornados = []
       player.reloadingTime = 0
       this.players[playerId] = player
     }
@@ -69,12 +69,11 @@ module.exports =
       // And multiply it by the tornado speed
       tornadoSpeed = engine.vectorTimes(tornadoSpeed, constants.TORNADO_SPEED)
 
-      var player = this.players[playerId]
       // creating the actual tornado...
-      player.tornados.push({
+      this.tornados.push({
         velocity: tornadoSpeed,
-        pos: new engine.Vector(playerPos.x, playerPos.y)
+        pos: new engine.Vector(playerPos.x, playerPos.y),
+        prop: playerId
       })
-      this.players[playerId] = player
     }
   }

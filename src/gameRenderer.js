@@ -39,12 +39,11 @@ module.exports =
         this.ctx.font = '20px Arial'
         this.ctx.textAlign = 'center'
         this.ctx.fillText(username, pos.x, pos.y - 50)
-
-        player.tornados.forEach((tornado) => {
-          const tpos = tornado.pos
-          this.ctx.strokeRect(tpos.x - 10, tpos.y - 10, 20, 20)
-        })
       }
+      client.tornados.forEach((tornado) => {
+        const tpos = tornado.pos
+        this.ctx.strokeRect(tpos.x - 10, tpos.y - 10, 20, 20)
+      })
 
       this.ctx.strokeRect(this.mousePos.x - 10, this.mousePos.y - 10, 20, 20)
     }
