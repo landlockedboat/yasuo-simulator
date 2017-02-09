@@ -10,17 +10,13 @@ module.exports =
 
     }
 
-    onPlayerConnected (playerId) {
+    onPlayerConnected (playerId, x, y) {
       const player = new engine.PlayerObject(
         playerId,
-        0,
-        0,
-        new engine.Inputs())
+        x,
+        y
+      )
 
       this.players[playerId] = player
-    }
-
-    setPlayerUsername (playerId, username) {
-      this.players[playerId].username = username
     }
   }

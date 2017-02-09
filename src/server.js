@@ -5,6 +5,7 @@ var http = require('http').Server(app)
 var io = require('socket.io')(http)
 // local requires
 const GameServer = require('./gameServer.js')
+const constants = require('./constants.js')
 
 const game = new GameServer()
 // rooting to public folder
@@ -13,7 +14,11 @@ app.use(express.static('public'))
 // socket connection handling
 io.on('connection', function (socket) {
   console.log(`${socket.id} connected`)
-  game.onPlayerConnected(socket.id)
+
+  // Initialise a new player on a random position
+  let randX = Math.random() * constants.MAP_WIDTH
+  let randY = Math.random() * constants.MAP_HEIGHT
+  game.onPlayerConnected(socket.id, randX, randY)
 
   // We prompt for the usernmae on the client side
   socket.emit('player:getusername')
@@ -24,7 +29,15 @@ io.on('connection', function (socket) {
   })
 
   socket.on('player:setusername', (username) => {
-    game.setPlayerUsername(socket.id, username)
+    game.players[socket.id].username = username
+    // Once the username is set, the game can begin
+    socket.emit('game:init', game.players)
+    socket.broadcast.emit('game.players:update', game.players)
+  })
+
+  socket.on('disconnect', () => {
+    delete game.players[socket.id]
+    socket.broadcast.emit('game.players:update', game.players)
   })
 })
 

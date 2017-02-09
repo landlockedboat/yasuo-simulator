@@ -13,8 +13,8 @@ exports.Inputs =
 exports.Vector =
   class Vector {
     constructor (x = 0, y = 0) {
-      this.x = 0
-      this.y = 0
+      this.x = x
+      this.y = y
     }
   }
 
@@ -32,8 +32,7 @@ exports.PlayerObject =
     constructor (id, x, y, inputs) {
       super(id, x, y)
       // velocity
-      this.vx = 0
-      this.vy = 0
+      this.velocity = new exports.Vector(0, 0)
       this.score = 0
       this.name = ''
       this.inputs = inputs

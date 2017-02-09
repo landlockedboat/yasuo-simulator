@@ -7,14 +7,10 @@ const GameRenderer = require('./gameRenderer.js')
 const socket = io()
 // we initialise the game
 var game = new GameClient()
-// and the gameRenderer, which uses PIXI.js in this case
-// we init the sprites path first
-const spritesPaths =
-  [
-    'bunny.jpg'
-  ]
-// and then, finally, the renderer
-var renderer = new GameRenderer(spritesPaths)
+// init the renderer
+var renderer = new GameRenderer()
+
+var gameStarted = false
 
 // ping calculus
 let lastPingTimestamp
@@ -36,12 +32,22 @@ socket.on('connect', function () {
   socket.on('game:pong', (serverNow) => {
     ping = (Date.now() - lastPingTimestamp) / 2
     clockDiff = (serverNow + ping) - Date.now()
-    console.log(clockDiff)
+    // console.log(clockDiff)
   })
 
   socket.on('player:getusername', () => {
     const username = prompt('How do you want to be called as, oh brave warrior?')
     socket.emit('player:setusername', username)
+  })
+
+  socket.on('game:init', (players) => {
+    console.log('game started')
+    game.players = players
+    gameStarted = true
+  })
+
+  socket.on('game.players:update', (players) => {
+    game.players = players
   })
 })
 
@@ -50,11 +56,16 @@ let past = Date.now()
 // main game loop
 function gameloop () {
   requestAnimationFrame(gameloop)
+  if (!gameStarted) { return }
   const now = Date.now()
   const delta = now - past
   past = now
   // once we have delta calculated we execute our logic
   game.logic(delta)
+  // packaging info to be sent to the renderer
+  game.ping = ping
+  game.clockDiff = clockDiff
+  // render the game
   renderer.render(delta, game)
 }
 
