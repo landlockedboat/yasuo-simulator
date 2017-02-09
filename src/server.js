@@ -13,10 +13,18 @@ app.use(express.static('public'))
 // socket connection handling
 io.on('connection', function (socket) {
   console.log(`${socket.id} connected`)
+  game.onPlayerConnected(socket.id)
+
+  // We prompt for the usernmae on the client side
+  socket.emit('player:getusername')
 
   // ping calculus
   socket.on('game:ping', () => {
     socket.emit('game:pong', Date.now())
+  })
+
+  socket.on('player:setusername', (username) => {
+    game.setPlayerUsername(socket.id, username)
   })
 })
 
