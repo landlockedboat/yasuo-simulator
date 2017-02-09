@@ -1,3 +1,5 @@
+var utils = require('./utils.js')
+
 // Inputs
 exports.Inputs =
   class Inputs {
@@ -22,6 +24,7 @@ exports.Vector =
 exports.GameObject =
   class GameObject {
     constructor (id, x = 0, y = 0) {
+      console.log(`${x}, ${y}`)
       this.id = id
       this.pos = new exports.Vector(x, y)
     }
@@ -29,15 +32,40 @@ exports.GameObject =
 
 exports.PlayerObject =
   class PlayerObject extends exports.GameObject {
-    constructor (id, x, y, inputs) {
+    constructor (id, x, y) {
+      console.log(`${x}, ${y}`)
       super(id, x, y)
       // velocity
       this.velocity = new exports.Vector(0, 0)
       this.score = 0
       this.name = ''
-      this.inputs = inputs
+      this.inputs = new exports.Inputs()
     }
   }
+
+exports.applyInputsClamped = function (player, delta, accel, maxSpeed, boundaries) {
+  let vInc = accel * delta
+  if (player.inputs.LEFT_ARROW) player.velocity.x -= vInc
+  if (player.inputs.RIGHT_ARROW) player.velocity.x += vInc
+  if (player.inputs.UP_ARROW) player.velocity.y -= vInc
+  if (player.inputs.DOWN_ARROW) player.velocity.y += vInc
+
+  player.velocity.x = utils.clampAbs(player.velocity.x, maxSpeed)
+  player.velocity.y = utils.clampAbs(player.velocity.y, maxSpeed)
+
+  player.pos.x += player.velocity.x * delta
+  player.pos.y += player.velocity.y * delta
+
+  player.pos.x = utils.clamp(player.pos.x, 0, boundaries.x)
+  player.pos.y = utils.clamp(player.pos.y, 0, boundaries.y)
+
+  if (utils.isClamped(player.pos.x, 0, boundaries.x)) {
+    player.velocity.x = 0
+  }
+  if (utils.isClamped(player.pos.y, 0, boundaries.y)) {
+    player.velocity.y = 0
+  }
+}
 
 // visuals
 exports.Sprite =

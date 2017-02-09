@@ -1,7 +1,12 @@
 // for standard
 /* globals requestAnimationFrame, io, prompt */
+// npm requires
+const kbd = require('@dasilvacontin/keyboard')
+const deepEqual = require('deep-equal')
+// local requires
 const GameClient = require('./gameClient.js')
 const GameRenderer = require('./gameRenderer.js')
+const engine = require('./engine.js')
 
 // socket.io
 const socket = io()
@@ -11,6 +16,9 @@ var game = new GameClient()
 var renderer = new GameRenderer()
 
 var gameStarted = false
+let myPlayerId = null
+let myUsername
+const myInputs = new engine.Inputs()
 
 // ping calculus
 let lastPingTimestamp
@@ -32,24 +40,52 @@ socket.on('connect', function () {
   socket.on('game:pong', (serverNow) => {
     ping = (Date.now() - lastPingTimestamp) / 2
     clockDiff = (serverNow + ping) - Date.now()
-    // console.log(clockDiff)
   })
 
   socket.on('player:getusername', () => {
-    const username = prompt('How do you want to be called as, oh brave warrior?')
-    socket.emit('player:setusername', username)
+    if (!myUsername) {
+      myUsername = prompt('How do you want to be called as, oh brave warrior?')
+    }
+    socket.emit('player:setusername', myUsername)
   })
 
-  socket.on('game:init', (players) => {
+  socket.on('game:init', (players, playerId) => {
     console.log('game started')
     game.players = players
+    myPlayerId = playerId
     gameStarted = true
+  })
+
+  socket.on('player:update', (player) => {
+    game.players[player.id] = player
   })
 
   socket.on('game.players:update', (players) => {
     game.players = players
   })
 })
+
+function updateInputs () {
+  const oldInputs = Object.assign({}, myInputs)
+
+  // using @dasilvacontin's keyboard package, we can update the
+  // inputs of our player based on the keyboard's state
+  for (let key in myInputs) {
+    myInputs[key] = kbd.isKeyDown(kbd[key])
+  }
+
+  if (!deepEqual(myInputs, oldInputs)) {
+    socket.emit('player:move', myInputs)
+
+    // update our local player' inputs aproximately when the server
+    // takes them into account
+    const frozenInputs = Object.assign({}, myInputs)
+    setTimeout(function () {
+      const myPlayer = game.players[myPlayerId]
+      myPlayer.inputs = frozenInputs
+    }, ping)
+  }
+}
 
 // initialise last registered timestamp
 let past = Date.now()
@@ -60,7 +96,9 @@ function gameloop () {
   const now = Date.now()
   const delta = now - past
   past = now
-  // once we have delta calculated we execute our logic
+  // once we have delta calculated we update our inputs
+  updateInputs()
+  // and we run our game logic
   game.logic(delta)
   // packaging info to be sent to the renderer
   game.ping = ping

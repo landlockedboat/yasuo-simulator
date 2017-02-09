@@ -16,8 +16,9 @@ io.on('connection', function (socket) {
   console.log(`${socket.id} connected`)
 
   // Initialise a new player on a random position
-  let randX = Math.random() * constants.MAP_WIDTH
-  let randY = Math.random() * constants.MAP_HEIGHT
+  let randX = Math.random() * constants.MAP_BOUNDARIES.x
+  let randY = Math.random() * constants.MAP_BOUNDARIES.y
+
   game.onPlayerConnected(socket.id, randX, randY)
 
   // We prompt for the usernmae on the client side
@@ -31,12 +32,17 @@ io.on('connection', function (socket) {
   socket.on('player:setusername', (username) => {
     game.players[socket.id].username = username
     // Once the username is set, the game can begin
-    socket.emit('game:init', game.players)
+    socket.emit('game:init', game.players, socket.id)
     socket.broadcast.emit('game.players:update', game.players)
   })
 
+  socket.on('player:move', (inputs) => {
+    game.onPlayerMoved(socket.id, inputs)
+    io.sockets.emit('player:update', game.players[socket.id])
+  })
+
   socket.on('disconnect', () => {
-    delete game.players[socket.id]
+    game.onPlayerDisconnected(socket.id)
     socket.broadcast.emit('game.players:update', game.players)
   })
 })
