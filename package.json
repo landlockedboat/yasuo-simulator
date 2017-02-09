@@ -1,0 +1,36 @@
+{
+  "name": "yggdrasil.io",
+  "version": "1.0.0",
+  "description": "A game about love and compassion.",
+  "main": "src/server.js",
+  "scripts": {
+    "prebuild": "npm run test",
+    "build": "browserify src/game.js -o public/bundle.js",
+    "watch": "chokidar 'src/**/*.js' -c 'npm run build'",
+    "fix": "standard --fix src/**/*.js" ,
+    "test": "standard src/**/*.js",
+    "postinstall": "npm run build",
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wextia/vga-html5-final-project.git"
+  },
+  "author": "wextia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wextia/vga-html5-final-project/issues"
+  },
+  "homepage": "https://github.com/wextia/vga-html5-final-project#readme",
+  "devDependencies": {
+    "browserify": "^14.0.0",
+    "chokidar-cli": "^1.2.0",
+    "nodemon": "^1.11.0",
+    "standard": "^9.0.0-beta.0"
+  },
+  "dependencies": {
+    "@dasilvacontin/keyboard": "^1.0.2",
+    "express": "^4.14.1",
+    "socket.io": "^1.7.2"
+  }
+}
