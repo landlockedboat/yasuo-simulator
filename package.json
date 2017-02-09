@@ -5,12 +5,12 @@
   "main": "src/server.js",
   "scripts": {
     "prebuild": "npm run test",
-    "build": "browserify src/game.js -o public/bundle.js",
+    "build": "browserify src/client.js -o public/bundle.js",
     "watch": "chokidar 'src/**/*.js' -c 'npm run build'",
     "fix": "standard --fix src/**/*.js",
     "test": "standard src/**/*.js",
     "postinstall": "npm run build",
-    "start": "node src/server.js"
+    "start": "nodemon src/server.js"
   },
   "repository": {
     "type": "git",
