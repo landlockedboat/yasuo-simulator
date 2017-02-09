@@ -7,7 +7,7 @@
     "prebuild": "npm run test",
     "build": "browserify src/game.js -o public/bundle.js",
     "watch": "chokidar 'src/**/*.js' -c 'npm run build'",
-    "fix": "standard --fix src/**/*.js" ,
+    "fix": "standard --fix src/**/*.js",
     "test": "standard src/**/*.js",
     "postinstall": "npm run build",
     "start": "node src/server.js"
@@ -31,6 +31,7 @@
   "dependencies": {
     "@dasilvacontin/keyboard": "^1.0.2",
     "express": "^4.14.1",
+    "pixi.js": "^4.3.4",
     "socket.io": "^1.7.2"
   }
 }
