@@ -11,6 +11,14 @@ exports.Inputs =
     }
   }
 
+exports.AttackInputs =
+  class AttackInputs {
+    constructor () {
+      this.Q_KEY = false
+      this.R_KEY = false
+    }
+  }
+
 // Vector class
 exports.Vector =
   class Vector {
@@ -38,12 +46,29 @@ exports.PlayerObject =
       this.score = 0
       this.name = ''
       this.inputs = new exports.Inputs()
+      this.attackInputs = new exports.AttackInputs()
     }
   }
 
 exports.vectorDamp = function (vector, dampFactor) {
   vector.x *= dampFactor
   vector.y *= dampFactor
+}
+
+exports.vectorBetween = function (vector1, vector2) {
+  let dx = vector2.x - vector1.x
+  let dy = vector2.y - vector1.y
+  return new exports.Vector(dx, dy)
+}
+
+// Caution! Calculus-intensive function! Use at your own risk!
+exports.vectorNormalize = function (vector) {
+  let len = Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2))
+  return new exports.Vector(vector.x / len, vector.y / len)
+}
+
+exports.vectorTimes = function (vector, num) {
+  return new exports.Vector(vector.x * num, vector.y * num)
 }
 
 exports.applySpeed = function (object, delta) {

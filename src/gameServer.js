@@ -1,11 +1,11 @@
 const engine = require('./engine.js')
+const utils = require('./utils.js')
 const constants = require('./constants.js')
 
 module.exports =
   class GameServer {
     constructor () {
       this.players = {}
-      this.tornados = {}
     }
 
     logic (delta) {
@@ -17,6 +17,9 @@ module.exports =
           constants.MAX_SPEED,
           constants.MAP_BOUNDARIES
         )
+        var reloadingTime = this.players[playerId].reloadingTime
+        reloadingTime -= delta
+        this.players[playerId].reloadingTime = utils.clamp(reloadingTime, 0, constants.RELOADING_TIME)
         this.players[playerId].tornados.forEach((tornado) => {
           engine.applySpeed(tornado, delta, constants.MAP_BOUNDARIES)
         })
@@ -30,6 +33,7 @@ module.exports =
         y
       )
       player.tornados = []
+      player.reloadingTime = 0
       this.players[playerId] = player
     }
 
@@ -44,11 +48,11 @@ module.exports =
       this.players[playerId] = player
     }
 
-    onCreateTornado (playerId, tornadoPos) {
+    onCreateTornado (playerId, tornadoPos, tornadoSpeed) {
       var player = this.players[playerId]
       // a tornado holds a position
       player.tornados.push({
-        velocity: new engine.Vector(1, 1),
+        velocity: tornadoSpeed,
         pos: new engine.Vector(tornadoPos.x, tornadoPos.y)
       })
       this.players[playerId] = player

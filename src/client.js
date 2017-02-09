@@ -2,6 +2,10 @@
 /* globals requestAnimationFrame, io, prompt */
 // npm requires
 const kbd = require('@dasilvacontin/keyboard')
+// we need to add a couple keys to @dasilvacontin's keyboard package!
+kbd.Q_KEY = 81
+kbd.R_KEY = 82
+
 const deepEqual = require('deep-equal')
 // local requires
 const GameClient = require('./gameClient.js')
@@ -22,6 +26,7 @@ var gameStarted = false
 let myPlayerId = null
 let myUsername
 const myInputs = new engine.Inputs()
+const myAttackInputs = new engine.AttackInputs()
 
 // ping calculus
 let lastPingTimestamp
@@ -69,7 +74,8 @@ socket.on('connect', function () {
 })
 
 function onClick (event) {
-  socket.emit('player:click', renderer.mousePos)
+  // we are not using this for the time being
+  // socket.emit('player:click', renderer.mousePos)
 }
 
 function updateInputs () {
@@ -91,6 +97,15 @@ function updateInputs () {
       const myPlayer = game.players[myPlayerId]
       myPlayer.inputs = frozenInputs
     }, ping)
+  }
+
+  const oldAttackinputs = Object.assign({}, myAttackInputs)
+
+  for (let key in myAttackInputs) {
+    myAttackInputs[key] = kbd.isKeyDown(kbd[key])
+  }
+  if (!deepEqual(myAttackInputs, oldAttackinputs)) {
+    socket.emit('player:attack', myAttackInputs, renderer.mousePos)
   }
 }
 
