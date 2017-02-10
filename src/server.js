@@ -6,6 +6,7 @@ var io = require('socket.io')(http)
 // local requires
 const GameServer = require('./gameServer.js')
 const constants = require('./constants.js')
+const utils = require('./utils.js')
 // const engine = require('./engine.js')
 
 const game = new GameServer()
@@ -56,9 +57,29 @@ io.on('connection', function (socket) {
 })
 
 function tornadoLogic (delta) {
-  // for (playerId in game.players){
-  //   var player = game.players[playerId]
-  // }
+  for (let playerId in game.players) {
+    var playPos = game.players[playerId].pos
+    // We use the squared distance because it's cheaper
+    var sumRadSq = Math.pow(constants.TORNADO_RADIUS + constants.PLAYER_RADIUS, 2)
+    var airbone = false
+    game.tornados.forEach((tornado) => {
+      var torPos = tornado.pos
+      if (utils.sqDist(playPos, torPos) < sumRadSq) {
+        // We don't want to collide with ourselves, do we?
+        if (tornado.prop !== playerId) {
+          airbone = true
+          game.players[playerId].airboneTime = constants.AIRBONE_TIME
+          game.players[playerId].isAirbone = true
+        }
+      }
+    })
+    if (airbone) {
+      // A player went airbone!
+      game.tornados = []
+      io.sockets.emit('game.tornados:update', game.tornados)
+      io.sockets.emit('player:update', game.players[playerId])
+    }
+  }
 }
 
 let past = Date.now()

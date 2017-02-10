@@ -12,6 +12,17 @@ module.exports =
     logic (delta) {
       // COMMON BETWEEN SERVER AND CLIENT
       for (let playerId in this.players) {
+        var player = this.players[playerId]
+        if (player.isAirbone) {
+          player.airboneTime -= delta
+          if (player.airboneTime <= 0) {
+            this.players[playerId].isAirbone = false
+            this.players[playerId].airboneTime = 0
+          }
+          // We skip this logic loop, player was airbone
+          continue
+        }
+
         engine.applyInputsClamped(this.players[playerId],
           delta,
           constants.ACCEL,
@@ -19,9 +30,11 @@ module.exports =
           constants.MAX_SPEED,
           constants.MAP_BOUNDARIES
         )
+        // BEGIN SERVER ONLY
         var reloadingTime = this.players[playerId].reloadingTime
         reloadingTime -= delta
         this.players[playerId].reloadingTime = utils.clamp(reloadingTime, 0, constants.RELOADING_TIME)
+        // END SERVER ONLY
       }
       this.tornados.forEach((tornado) => {
         engine.applySpeed(tornado, delta, constants.MAP_BOUNDARIES)
@@ -35,6 +48,8 @@ module.exports =
         y
       )
       player.reloadingTime = 0
+      player.airboneTime = 0
+      player.isAirbone = false
       this.players[playerId] = player
     }
 
@@ -44,13 +59,19 @@ module.exports =
 
     onPlayerMoved (playerId, inputs) {
       const player = this.players[playerId]
+      if (player.isAirbone) {
+        return
+      }
       player.timestamp = Date.now()
       player.inputs = inputs
       this.players[playerId] = player
     }
 
     onAttack (playerId, attackInputs, playerPos, mousePos) {
-      var player = this.players[playerId]
+      const player = this.players[playerId]
+      if (player.isAirbone) {
+        return
+      }
       if (attackInputs.Q_KEY) {
         if (player.reloadingTime <= 0) {
           player.reloadingTime = constants.RELOADING_TIME
