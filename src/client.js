@@ -85,7 +85,7 @@ socket.on('connect', function () {
 
   socket.on('player:getusername', () => {
     if (!myUsername) {
-      myUsername = prompt('How do you want to be called as, oh brave warrior?')
+      myUsername = prompt('How do you want to be called as, oh brave warrior?', 'yasuo')
     }
     socket.emit('player:setusername', myUsername)
   })
