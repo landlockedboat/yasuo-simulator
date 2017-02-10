@@ -1,6 +1,6 @@
-const engine = require('./engine.js')
-const utils = require('./utils.js')
-const constants = require('./constants.js')
+const engine = require('../common/engine.js')
+const utils = require('../common/utils.js')
+const constants = require('../common/constants.js')
 
 module.exports =
   class GameServer {
@@ -53,7 +53,6 @@ module.exports =
       player.reloadingTime = 0
       player.airboneTime = 0
       player.isAirbone = false
-      // FIXME: change to isDead
       player.isDead = false
       this.players[playerId] = player
     }

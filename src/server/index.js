@@ -5,9 +5,8 @@ var http = require('http').Server(app)
 var io = require('socket.io')(http)
 // local requires
 const GameServer = require('./gameServer.js')
-const constants = require('./constants.js')
-const utils = require('./utils.js')
-// const engine = require('./engine.js')
+const constants = require('../common/constants.js')
+const utils = require('../common/utils.js')
 
 const game = new GameServer()
 // rooting to public folder

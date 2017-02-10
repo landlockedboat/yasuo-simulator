@@ -1,5 +1,5 @@
-var constants = require('./constants.js')
-var engine = require('./engine.js')
+var constants = require('../common/constants.js')
+var engine = require('../common/engine.js')
 
 module.exports =
   class GameClient {

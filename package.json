@@ -2,15 +2,15 @@
   "name": "yggdrasil.io",
   "version": "1.0.0",
   "description": "A game about love and compassion.",
-  "main": "src/server.js",
+  "main": "src/server/index.js",
   "scripts": {
     "prebuild": "npm run test",
-    "build": "browserify src/client.js -o public/bundle.js",
+    "build": "browserify src/client/index.js -o public/bundle.js",
     "watch": "chokidar 'src/**/*.js' -c 'npm run build'",
     "fix": "standard --fix src/**/*.js",
     "test": "standard src/**/*.js",
     "postinstall": "npm run build",
-    "start": "nodemon src/server.js"
+    "start": "nodemon src/server/index.js"
   },
   "repository": {
     "type": "git",
