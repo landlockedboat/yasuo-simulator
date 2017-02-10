@@ -1,5 +1,5 @@
 // for standard
-/* globals requestAnimationFrame, io, prompt, Audio, alert */
+/* globals requestAnimationFrame, io, prompt, alert */
 // npm requires
 const kbd = require('@dasilvacontin/keyboard')
 // we need to add a couple keys to @dasilvacontin's keyboard package!
@@ -14,6 +14,7 @@ const deepEqual = require('deep-equal')
 // local requires
 const GameClient = require('./gameClient.js')
 const GameRenderer = require('./gameRenderer.js')
+const GameAudio = require('./gameAudio.js')
 const engine = require('./engine.js')
 
 // socket.io
@@ -25,41 +26,20 @@ var renderer = new GameRenderer()
 // and add a reference to the on onClick callback
 // for when we click on the canvas
 renderer.registerOnClickCallback(onClick)
+// now, the audio
+const sounds = {
+  hasagi: 'sounds/hasagi.mp3',
+  ulti: 'sounds/ulti.mp3',
+  danger: 'sounds/danger.wav'
+}
+// we can access all sounds via their name later.
+var audio = new GameAudio(sounds, 10)
 
 var gameStarted = false
 let myPlayerId = null
 let myUsername
 const myInputs = new engine.Inputs()
 const myAttackInputs = new engine.AttackInputs()
-
-// sounds, i am too tired to make a class for this
-// FIXME: make a class for this
-const soundsAmmount = 10
-
-function createSoundCollection (soundPath) {
-  var ret = []
-  for (let i = 0; i < soundsAmmount; ++i) {
-    ret[i] = new Audio(soundPath)
-  }
-  return ret
-}
-
-function playSound (soundCollection) {
-  for (let i = 0; i < soundsAmmount; ++i) {
-    const sound = soundCollection[i]
-    if (sound.duration > 0 && !sound.paused) {
-      // The sound is playing
-      continue
-    } else {
-      sound.play()
-      break
-    }
-  }
-}
-
-const hasagiSounds = createSoundCollection('sounds/hasagi.mp3')
-const ultiSounds = createSoundCollection('sounds/ulti.mp3')
-const dangerSounds = createSoundCollection('sounds/danger.wav')
 
 // ping calculus
 let lastPingTimestamp
@@ -102,15 +82,15 @@ socket.on('connect', function () {
   socket.on('game.tornados:update', (tornados) => {
     game.tornados = tornados
     if (tornados.length <= 0) {
-      playSound(dangerSounds)
+      audio.play('danger')
     } else {
-      playSound(hasagiSounds)
+      audio.play('hasagi')
     }
   })
 
   socket.on('player:update', (player) => {
     if (player.isDead) {
-      playSound(ultiSounds)
+      audio.play('ulti')
       if (player.id === myPlayerId) {
         alert('You are dead. Press F5 to respawn.')
       }
