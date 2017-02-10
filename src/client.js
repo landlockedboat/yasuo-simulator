@@ -94,6 +94,8 @@ socket.on('connect', function () {
     console.log('game started')
     game.players = players
     myPlayerId = playerId
+    // for rendering the 'press R' text
+    game.myPlayerId = playerId
     gameStarted = true
   })
 

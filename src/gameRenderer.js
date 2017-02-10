@@ -32,6 +32,7 @@ module.exports =
       // Repaint the background
       this.ctx.fillStyle = 'white'
       this.ctx.drawImage(this.bgSprite, 0, 0, window.innerWidth, window.innerHeight)
+      var airbonePlayer
       // Draw the player images
       for (let playerId in client.players) {
         const player = client.players[playerId]
@@ -44,6 +45,7 @@ module.exports =
           currentSprite = imgdye(currentSprite, '#FF0000', 0.5)
         } else if (player.isAirbone) {
           currentSprite = imgdye(currentSprite, '#0000FF', 0.5)
+          airbonePlayer = player
         }
         this.ctx.drawImage(currentSprite, pos.x - 25, pos.y - 25, 50, 50)
 
@@ -56,6 +58,12 @@ module.exports =
         const tpos = tornado.pos
         this.ctx.drawImage(this.tornadoSprite, tpos.x - 25, tpos.y - 30, 50, 60)
       })
+
+      if (airbonePlayer && airbonePlayer.id !== client.myPlayerId) {
+        this.ctx.font = '100px Arial'
+        this.ctx.fillStyle = 'red'
+        this.ctx.fillText('PRESS R!', this.canvas.width / 2, 200)
+      }
 
       this.ctx.drawImage(this.cursorSprite, this.mousePos.x - 20, this.mousePos.y - 20, 40, 40)
     }
