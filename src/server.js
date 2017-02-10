@@ -49,9 +49,29 @@ io.on('connection', function (socket) {
   })
 
   socket.on('player:attack', (attackInputs, mousePos) => {
-    var playerPos = game.players[socket.id].pos
-    game.onAttack(socket.id, attackInputs, playerPos, mousePos)
-    io.sockets.emit('game.tornados:update', game.tornados)
+    const playerId = socket.id
+    const player = game.players[playerId]
+    if (player.isAirbone || player.dead) {
+      return
+    }
+    if (attackInputs.Q_KEY) {
+      if (player.reloadingTime <= 0) {
+        player.reloadingTime = constants.RELOADING_TIME
+        game.onCreateTornado(playerId, player.pos, mousePos)
+        io.sockets.emit('game.tornados:update', game.tornados)
+      }
+    } else if (attackInputs.R_KEY) {
+      for (let player2Id in game.players) {
+        const player2 = game.players[player2Id]
+        if (player2.isAirbone) {
+          player.pos = Object.assign({}, player2.pos)
+          player2.dead = true
+          game.players[player2Id] = player2
+          io.sockets.emit('player:update', game.players[player2Id])
+        }
+      }
+    }
+    game.players[playerId] = player
     io.sockets.emit('player:update', game.players[socket.id])
   })
 })

@@ -22,6 +22,9 @@ module.exports =
           // We skip this logic loop, player was airbone
           continue
         }
+        if (player.dead) {
+          continue
+        }
 
         engine.applyInputsClamped(this.players[playerId],
           delta,
@@ -50,6 +53,8 @@ module.exports =
       player.reloadingTime = 0
       player.airboneTime = 0
       player.isAirbone = false
+      // FIXME: change to isDead
+      player.dead = false
       this.players[playerId] = player
     }
 
@@ -64,20 +69,6 @@ module.exports =
       }
       player.timestamp = Date.now()
       player.inputs = inputs
-      this.players[playerId] = player
-    }
-
-    onAttack (playerId, attackInputs, playerPos, mousePos) {
-      const player = this.players[playerId]
-      if (player.isAirbone) {
-        return
-      }
-      if (attackInputs.Q_KEY) {
-        if (player.reloadingTime <= 0) {
-          player.reloadingTime = constants.RELOADING_TIME
-          this.onCreateTornado(playerId, playerPos, mousePos)
-        }
-      }
       this.players[playerId] = player
     }
 
