@@ -75,7 +75,6 @@ module.exports =
     onCreateTornado (playerId, playerPos, mousePos) {
       // We get the vector from playerPos to mousePos
       var tornadoSpeed = engine.vectorBetween(playerPos, mousePos)
-      console.log(tornadoSpeed)
       // And we normalize it
       tornadoSpeed = engine.vectorNormalize(tornadoSpeed)
       // And multiply it by the tornado speed

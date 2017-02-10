@@ -10,13 +10,23 @@
             padding: 0;
             overflow: hidden;
         }
+
+        *{
+            cursor: none
+        }
     </style>
 </head>
 
 <body>
+    <div id ='sprites' style="display:none;">
+        <img id="player.sprite" src="/sprites/player.png" width="50" height="50">
+        <img id="tornado.sprite" src="/sprites/tornado.png" width="50" height="60">
+        <img id="cursor.sprite" src="/sprites/cursor.png" width="50" height="50">
+        <img id="bg.sprite" src="/sprites/bg.png" width="50" height="50">
+    </div>
     <canvas id='main.canvas'></canvas>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="bundle.js"></script>
+    <script src='/socket.io/socket.io.js'></script>
+    <script src='bundle.js'></script>
 </body>
 
 </html>

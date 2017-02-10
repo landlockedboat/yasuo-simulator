@@ -1,5 +1,5 @@
 // for standard
-/* globals requestAnimationFrame, io, prompt */
+/* globals requestAnimationFrame, io, prompt, Audio, alert */
 // npm requires
 const kbd = require('@dasilvacontin/keyboard')
 // we need to add a couple keys to @dasilvacontin's keyboard package!
@@ -31,6 +31,35 @@ let myPlayerId = null
 let myUsername
 const myInputs = new engine.Inputs()
 const myAttackInputs = new engine.AttackInputs()
+
+// sounds, i am too tired to make a class for this
+// FIXME: make a class for this
+const soundsAmmount = 10
+
+function createSoundCollection (soundPath) {
+  var ret = []
+  for (let i = 0; i < soundsAmmount; ++i) {
+    ret[i] = new Audio(soundPath)
+  }
+  return ret
+}
+
+function playSound (soundCollection) {
+  for (let i = 0; i < soundsAmmount; ++i) {
+    const sound = soundCollection[i]
+    if (sound.duration > 0 && !sound.paused) {
+      // The sound is playing
+      continue
+    } else {
+      sound.play()
+      break
+    }
+  }
+}
+
+const hasagiSounds = createSoundCollection('sounds/hasagi.mp3')
+const ultiSounds = createSoundCollection('sounds/ulti.mp3')
+const dangerSounds = createSoundCollection('sounds/danger.wav')
 
 // ping calculus
 let lastPingTimestamp
@@ -70,9 +99,20 @@ socket.on('connect', function () {
 
   socket.on('game.tornados:update', (tornados) => {
     game.tornados = tornados
+    if (tornados.length <= 0) {
+      playSound(dangerSounds)
+    } else {
+      playSound(hasagiSounds)
+    }
   })
 
   socket.on('player:update', (player) => {
+    if (player.dead) {
+      playSound(ultiSounds)
+      if (player.id === myPlayerId) {
+        alert('You are dead. Press F5 to respawn.')
+      }
+    }
     game.players[player.id] = player
   })
 
