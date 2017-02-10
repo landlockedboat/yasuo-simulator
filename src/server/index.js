@@ -67,6 +67,7 @@ io.on('connection', function (socket) {
           player2.isDead = true
           game.players[player2Id] = player2
           io.sockets.emit('player:update', game.players[player2Id])
+          player.score += 1
         }
       }
     }

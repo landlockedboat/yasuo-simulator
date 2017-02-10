@@ -56,6 +56,11 @@ module.exports =
         this.ctx.font = '20px Arial'
         this.ctx.textAlign = 'center'
         this.ctx.fillText(username, pos.x, pos.y - 50)
+
+        var score = player.score
+        this.ctx.font = '20px Arial'
+        this.ctx.textAlign = 'center'
+        this.ctx.fillText(`kills: ${score}`, pos.x, pos.y + 50)
       }
       client.tornados.forEach((tornado) => {
         const tpos = tornado.pos

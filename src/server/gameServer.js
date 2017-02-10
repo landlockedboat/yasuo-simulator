@@ -54,6 +54,7 @@ module.exports =
       player.airboneTime = 0
       player.isAirbone = false
       player.isDead = false
+      player.score = 0
       this.players[playerId] = player
     }
 
