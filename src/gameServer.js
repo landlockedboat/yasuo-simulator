@@ -22,7 +22,7 @@ module.exports =
           // We skip this logic loop, player was airbone
           continue
         }
-        if (player.dead) {
+        if (player.isDead) {
           continue
         }
 
@@ -54,7 +54,7 @@ module.exports =
       player.airboneTime = 0
       player.isAirbone = false
       // FIXME: change to isDead
-      player.dead = false
+      player.isDead = false
       this.players[playerId] = player
     }
 

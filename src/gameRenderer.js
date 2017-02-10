@@ -41,7 +41,7 @@ module.exports =
         this.ctx.fillStyle = 'black'
         this.ctx.lineWidth = 5
         var currentSprite = this.playerSprite
-        if (player.dead) {
+        if (player.isDead) {
           currentSprite = imgdye(currentSprite, '#FF0000', 0.5)
         } else if (player.isAirbone) {
           currentSprite = imgdye(currentSprite, '#0000FF', 0.5)

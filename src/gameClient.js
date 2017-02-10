@@ -20,7 +20,7 @@ module.exports =
           // We skip this logic loop, player was airbone
           continue
         }
-        if (player.dead) {
+        if (player.isDead) {
           continue
         }
         engine.applyInputsClamped(this.players[playerId],

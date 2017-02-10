@@ -109,7 +109,7 @@ socket.on('connect', function () {
   })
 
   socket.on('player:update', (player) => {
-    if (player.dead) {
+    if (player.isDead) {
       playSound(ultiSounds)
       if (player.id === myPlayerId) {
         alert('You are dead. Press F5 to respawn.')

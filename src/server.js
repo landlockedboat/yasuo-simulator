@@ -51,7 +51,7 @@ io.on('connection', function (socket) {
   socket.on('player:attack', (attackInputs, mousePos) => {
     const playerId = socket.id
     const player = game.players[playerId]
-    if (player.isAirbone || player.dead) {
+    if (player.isAirbone || player.isDead) {
       return
     }
     if (attackInputs.Q_KEY) {
@@ -65,7 +65,7 @@ io.on('connection', function (socket) {
         const player2 = game.players[player2Id]
         if (player2.isAirbone) {
           player.pos = Object.assign({}, player2.pos)
-          player2.dead = true
+          player2.isDead = true
           game.players[player2Id] = player2
           io.sockets.emit('player:update', game.players[player2Id])
         }
