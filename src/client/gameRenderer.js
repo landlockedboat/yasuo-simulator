@@ -31,7 +31,10 @@ module.exports =
     render (delta, client) {
       // Repaint the background
       this.ctx.fillStyle = 'white'
-      this.ctx.drawImage(this.bgSprite, 0, 0, window.innerWidth, window.innerHeight)
+      this.ctx.globalAlpha = 0.5
+      this.ctx.drawImage(this.bgSprite, 0, 0, window.innerWidth,
+      window.innerHeight)
+      this.ctx.globalAlpha = 1
       var airbonePlayer
       // Draw the player images
       for (let playerId in client.players) {
