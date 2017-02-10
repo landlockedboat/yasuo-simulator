@@ -32,6 +32,7 @@
     "@dasilvacontin/keyboard": "^1.0.2",
     "deep-equal": "^1.0.1",
     "express": "^4.14.1",
+    "imgdye": "^1.0.0",
     "socket.io": "^1.7.2"
   }
 }
