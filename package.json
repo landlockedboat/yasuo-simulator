@@ -1,5 +1,5 @@
 {
-  "name": "yggdrasil.io",
+  "name": "yasuo-simulator",
   "version": "1.0.0",
   "description": "A game about love and compassion.",
   "main": "src/server/index.js",
