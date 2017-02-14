@@ -143,7 +143,7 @@ function gameloop () {
   requestAnimationFrame(gameloop)
   if (!game.isRunning) { return }
   const now = Date.now()
-  const delta = now - past
+  const delta = (now - past) / 1000
   past = now
   // once we have delta calculated we update our inputs
   updateInputs()

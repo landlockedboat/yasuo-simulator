@@ -1,4 +1,5 @@
 var utils = require('./utils.js')
+var deepcopy = require('deepcopy')
 
 // Inputs
 exports.Inputs =
@@ -55,20 +56,43 @@ exports.vectorDamp = function (vector, dampFactor) {
   vector.y *= dampFactor
 }
 
-exports.vectorBetween = function (vector1, vector2) {
-  let dx = vector2.x - vector1.x
-  let dy = vector2.y - vector1.y
+exports.vectorBetween = function (origin, destination) {
+  let dx = destination.x - origin.x
+  let dy = destination.y - origin.y
   return new exports.Vector(dx, dy)
+}
+
+exports.vectorMagnitude = function (vector) {
+  return Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2))
 }
 
 // Caution! Calculus-intensive function! Use at your own risk!
 exports.vectorNormalize = function (vector) {
-  let len = Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2))
-  return new exports.Vector(vector.x / len, vector.y / len)
+  let len = exports.vectorMagnitude(vector)
+  if (len !== 0) {
+    return new exports.Vector(vector.x / len, vector.y / len)
+  } else {
+    return new exports.Vector()
+  }
 }
 
 exports.vectorTimes = function (vector, num) {
   return new exports.Vector(vector.x * num, vector.y * num)
+}
+
+exports.vectorSum = function (vector1, vector2) {
+  return new exports.Vector(vector1.x + vector2.x, vector1.y + vector2.y)
+}
+
+exports.vectorMoveTo = function (vector1, vector2, ammount, closeEnough) {
+  let delta = exports.vectorBetween(vector1, vector2)
+  if (exports.vectorMagnitude(delta) < closeEnough) {
+    return deepcopy(vector2)
+  }
+
+  delta = exports.vectorNormalize(delta)
+  delta = exports.vectorTimes(delta, ammount)
+  return exports.vectorSum(vector1, delta)
 }
 
 exports.applySpeed = function (object, delta) {
@@ -76,27 +100,12 @@ exports.applySpeed = function (object, delta) {
   object.pos.y += object.velocity.y * delta
 }
 
-exports.applyInputsClamped = function (player, delta, accel, dampFactor, maxSpeed, boundaries) {
-  let vInc = accel * delta
-  if (player.inputs.A_KEY) player.velocity.x -= vInc
-  if (player.inputs.D_KEY) player.velocity.x += vInc
-  if (player.inputs.W_KEY) player.velocity.y -= vInc
-  if (player.inputs.S_KEY) player.velocity.y += vInc
-
-  player.velocity.x = utils.clampAbs(player.velocity.x, maxSpeed)
-  player.velocity.y = utils.clampAbs(player.velocity.y, maxSpeed)
-
-  exports.applySpeed(player, delta)
-  // we damp the speed of the player
-  exports.vectorDamp(player.velocity, dampFactor)
+exports.applyInputsClamped = function (player, delta, maxSpeed, boundaries) {
+  if (player.inputs.A_KEY) player.pos.x -= maxSpeed * delta
+  if (player.inputs.D_KEY) player.pos.x += maxSpeed * delta
+  if (player.inputs.W_KEY) player.pos.y -= maxSpeed * delta
+  if (player.inputs.S_KEY) player.pos.y += maxSpeed * delta
 
   player.pos.x = utils.clamp(player.pos.x, 0, boundaries.x)
   player.pos.y = utils.clamp(player.pos.y, 0, boundaries.y)
-
-  if (utils.isClamped(player.pos.x, 0, boundaries.x)) {
-    player.velocity.x = 0
-  }
-  if (utils.isClamped(player.pos.y, 0, boundaries.y)) {
-    player.velocity.y = 0
-  }
 }

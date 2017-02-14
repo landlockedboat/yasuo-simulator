@@ -17,7 +17,7 @@ module.exports = class Game {
           this.players[playerId].isAirbone = false
           this.players[playerId].airboneTime = 0
         }
-                // We skip this logic loop, player was airbone
+        // We skip this logic loop, player was airbone
         continue
       }
       if (player.isDead) {
@@ -25,8 +25,6 @@ module.exports = class Game {
       }
       engine.applyInputsClamped(this.players[playerId],
                 delta,
-                constants.ACCEL,
-                constants.DAMP_FACTOR,
                 constants.MAX_SPEED,
                 constants.MAP_BOUNDARIES
             )

@@ -110,7 +110,7 @@ let past = Date.now()
 setInterval(function () {
   // delta time calculus
   const now = Date.now()
-  const delta = now - past
+  const delta = (now - past) / 1000
   past = now
   // execute the logic loop
   game.logic(delta)

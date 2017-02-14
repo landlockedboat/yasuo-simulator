@@ -38,29 +38,31 @@ module.exports =
       var airbonePlayer
       // Draw the player images
       for (let playerId in client.players) {
+        const vPlayer = client.virtualPlayers[playerId]
         const player = client.players[playerId]
-        const pos = player.pos
+        const vPpos = vPlayer.pos
         this.ctx.strokeStyle = 'black'
         this.ctx.fillStyle = 'black'
         this.ctx.lineWidth = 5
         var currentSprite = this.playerSprite
-        if (player.isDead) {
+        if (vPlayer.isDead) {
           currentSprite = imgdye(currentSprite, '#FF0000', 0.5)
-        } else if (player.isAirbone) {
+        } else if (vPlayer.isAirbone) {
           currentSprite = imgdye(currentSprite, '#0000FF', 0.5)
-          airbonePlayer = player
+          airbonePlayer = vPlayer
         }
-        this.ctx.drawImage(currentSprite, pos.x - 25, pos.y - 25, 50, 50)
+        this.ctx.drawImage(currentSprite, vPpos.x - 25, vPpos.y - 25, 50, 50)
+        this.ctx.strokeRect(player.pos.x - 25, player.pos.y - 25, 50, 50)
 
-        var username = player.username
+        var username = vPlayer.username
         this.ctx.font = '20px Arial'
         this.ctx.textAlign = 'center'
-        this.ctx.fillText(username, pos.x, pos.y - 50)
+        this.ctx.fillText(username, vPpos.x, vPpos.y - 50)
 
-        var score = player.score
+        var score = vPlayer.score
         this.ctx.font = '20px Arial'
         this.ctx.textAlign = 'center'
-        this.ctx.fillText(`kills: ${score}`, pos.x, pos.y + 50)
+        this.ctx.fillText(`kills: ${score}`, vPpos.x, vPpos.y + 50)
       }
       client.tornados.forEach((tornado) => {
         const tpos = tornado.pos
