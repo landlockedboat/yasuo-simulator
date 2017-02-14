@@ -1,5 +1,6 @@
 # yasuo simulator!
 ![build status](https://travis-ci.org/wextia/vga-html5-final-project.svg?branch=master)
+![](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square)
 
 Play it [here](http://yasuo-simulator.herokuapp.com/)!
 
