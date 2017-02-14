@@ -1,4 +1,5 @@
 # yasuo simulator!
+![build status](https://travis-ci.org/wextia/vga-html5-final-project.svg?branch=master)
 
 Play it [here](http://yasuo-simulator.herokuapp.com/)!
 
