@@ -34,8 +34,6 @@ const sounds = {
 // we can access all sounds via their name later.
 var audio = new GameAudio(sounds, 10)
 
-var gameStarted = false
-let myPlayerId = null
 let myUsername
 const myInputs = new engine.Inputs()
 const myAttackInputs = new engine.AttackInputs()
@@ -71,11 +69,7 @@ socket.on('connect', function () {
 
   socket.on('game:init', (players, playerId) => {
     console.log('game started')
-    game.players = players
-    myPlayerId = playerId
-    // for rendering the 'press R' text
-    game.myPlayerId = playerId
-    gameStarted = true
+    game.onGameInit(players, playerId)
   })
 
   socket.on('game.tornados:update', (tornados) => {
@@ -90,7 +84,7 @@ socket.on('connect', function () {
   socket.on('player:update', (player) => {
     if (player.isDead) {
       audio.play('ulti')
-      if (player.id === myPlayerId) {
+      if (player.id === game.myPlayerId) {
         alert('You are dead. Press F5 to respawn.')
       }
     }
@@ -123,7 +117,7 @@ function updateInputs () {
     // takes them into account
     const frozenInputs = Object.assign({}, myInputs)
     setTimeout(function () {
-      const myPlayer = game.players[myPlayerId]
+      const myPlayer = game.getMyPlayer()
       myPlayer.inputs = frozenInputs
     }, ping)
   }
@@ -143,7 +137,7 @@ let past = Date.now()
 // main game loop
 function gameloop () {
   requestAnimationFrame(gameloop)
-  if (!gameStarted) { return }
+  if (!game.isRunning) { return }
   const now = Date.now()
   const delta = now - past
   past = now
