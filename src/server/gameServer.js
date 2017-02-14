@@ -1,47 +1,20 @@
 const engine = require('../common/engine.js')
 const utils = require('../common/utils.js')
 const constants = require('../common/constants.js')
+const Game = require('../common/game.js')
 
 module.exports =
-  class GameServer {
-    constructor () {
-      this.players = {}
-      this.tornados = []
+  class GameServer extends Game {
+    logic (delta) {
+      // We do a generic logic loop and we pass it the forEachPlayerLogic callback
+      // to execute the function for each player
+      super.logic(delta, this.forEachPlayerLogic.bind(this))
     }
 
-    logic (delta) {
-      // COMMON BETWEEN SERVER AND CLIENT
-      for (let playerId in this.players) {
-        var player = this.players[playerId]
-        if (player.isAirbone) {
-          player.airboneTime -= delta
-          if (player.airboneTime <= 0) {
-            this.players[playerId].isAirbone = false
-            this.players[playerId].airboneTime = 0
-          }
-          // We skip this logic loop, player was airbone
-          continue
-        }
-        if (player.isDead) {
-          continue
-        }
-
-        engine.applyInputsClamped(this.players[playerId],
-          delta,
-          constants.ACCEL,
-          constants.DAMP_FACTOR,
-          constants.MAX_SPEED,
-          constants.MAP_BOUNDARIES
-        )
-        // BEGIN SERVER ONLY
-        var reloadingTime = this.players[playerId].reloadingTime
-        reloadingTime -= delta
-        this.players[playerId].reloadingTime = utils.clamp(reloadingTime, 0, constants.RELOADING_TIME)
-        // END SERVER ONLY
-      }
-      this.tornados.forEach((tornado) => {
-        engine.applySpeed(tornado, delta, constants.MAP_BOUNDARIES)
-      })
+    forEachPlayerLogic (delta, playerId) {
+      var reloadingTime = this.players[playerId].reloadingTime
+      reloadingTime -= delta
+      this.players[playerId].reloadingTime = utils.clamp(reloadingTime, 0, constants.RELOADING_TIME)
     }
 
     onPlayerConnected (playerId, x, y) {
