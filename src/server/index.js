@@ -31,10 +31,14 @@ io.on('connection', function (socket) {
   })
 
   socket.on('player:setusername', (username) => {
-    game.players[socket.id].username = username
-    // Once the username is set, the game can begin
+    // We cache the player
+    let player = game.players[socket.id]
+    player.username = username
+    // Once the username is set, the game can begin for her
     socket.emit('game:init', game.players, socket.id)
-    socket.broadcast.emit('game.players:update', game.players)
+    // We emit that a new player has appeared
+    socket.broadcast.emit('game.players:new', player)
+    game.players[socket.id] = player
   })
 
   socket.on('player:move', (inputs) => {

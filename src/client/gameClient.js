@@ -9,9 +9,18 @@ module.exports =
     }
 
     onGameInit (players, myPlayerId) {
-      this.players = players
+      // At first, the virtual players have the same position
+      // as the real ones
+      this.players = this.virtualPlayers = players
       this.myPlayerId = myPlayerId
       this.isRunning = true
+    }
+
+    onNewPlayer(player){
+      if(this.players[player.id]){
+        throw new Error(`Player ${player.id} already exists!`)
+      }
+      this.players[player.id] = player
     }
 
     getMyPlayer () {

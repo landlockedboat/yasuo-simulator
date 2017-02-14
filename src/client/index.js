@@ -94,6 +94,10 @@ socket.on('connect', function () {
   socket.on('game.players:update', (players) => {
     game.players = players
   })
+
+  socket.on('game.players:new', (player) => {
+    game.onNewPlayer(player)
+  })
 })
 
 function onClick (event) {
