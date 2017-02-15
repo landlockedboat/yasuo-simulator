@@ -1,8 +1,9 @@
 // for standard
-/* globals requestAnimationFrame, io, prompt, alert */
+/* globals requestAnimationFrame, io, location */
 // npm requires
 const kbd = require('@dasilvacontin/keyboard')
 const deepEqual = require('deep-equal')
+const swal = require('sweetalert')
 // local requires
 const GameClient = require('./gameClient.js')
 const GameRenderer = require('./gameRenderer.js')
@@ -61,10 +62,21 @@ socket.on('connect', function () {
   })
 
   socket.on('player:getusername', () => {
-    if (!myUsername) {
-      myUsername = prompt('How do you want to be called as, oh brave warrior?', 'yasuo')
+    if (myUsername) {
+      // If our username is already set, we bail
+      return
     }
-    socket.emit('player:setusername', myUsername)
+    swal({
+      title: 'Introduce your name!',
+      text: 'How do you want to be called as, oh brave warrior?',
+      type: 'input',
+      closeOnConfirm: true,
+      showCancelButton: false,
+      animation: 'slide-from-top'
+    }, function (inputValue) {
+      myUsername = inputValue
+      socket.emit('player:setusername', myUsername)
+    })
   })
 
   socket.on('game:init', (players, playerId) => {
@@ -82,10 +94,19 @@ socket.on('connect', function () {
   })
 
   socket.on('player:update', (player) => {
-    if (player.isDead) {
+    if (player.isDead && game.isRunning) {
       audio.play('ulti')
-      if (player.id === game.myPlayerId) {
-        alert('You are dead. Press F5 to respawn.')
+      if (player.id === game.myPlayerId && game.isRunning) {
+        swal({
+          title: 'You are dead!',
+          text: `Press OK to respawn...`,
+          type: 'info',
+          closeOnConfirm: true,
+          showConfirmButton: true,
+          disableButtonsOnConfirm: true
+        }, function () {
+          location.reload()
+        })
       }
     }
     game.players[player.id] = player
