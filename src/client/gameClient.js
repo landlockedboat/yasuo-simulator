@@ -9,6 +9,7 @@ module.exports =
       super()
       // This players will be the ones being rendered
       this.virtualPlayers = {}
+      this.isInDebugMode = false
     }
 
     onGameInit (players, myPlayerId) {

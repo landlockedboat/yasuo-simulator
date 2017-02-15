@@ -44,6 +44,14 @@ module.exports =
         this.ctx.strokeStyle = 'black'
         this.ctx.fillStyle = 'black'
         this.ctx.lineWidth = 5
+
+        this.ctx.font = '20px Arial'
+        this.ctx.textAlign = 'center'
+
+        if (client.isInDebugMode) {
+          this.ctx.fillText('DEBUG', 50, 50)
+        }
+
         var currentSprite = this.playerSprite
         if (vPlayer.isDead) {
           currentSprite = imgdye(currentSprite, '#FF0000', 0.5)
