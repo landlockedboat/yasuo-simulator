@@ -50,6 +50,7 @@ module.exports =
 
         if (client.isInDebugMode) {
           this.ctx.fillText('DEBUG', 50, 50)
+          this.ctx.strokeRect(player.pos.x - 25, player.pos.y - 25, 50, 50)
         }
 
         var currentSprite = this.playerSprite
@@ -60,7 +61,6 @@ module.exports =
           airbonePlayer = vPlayer
         }
         this.ctx.drawImage(currentSprite, vPpos.x - 25, vPpos.y - 25, 50, 50)
-        this.ctx.strokeRect(player.pos.x - 25, player.pos.y - 25, 50, 50)
 
         var username = vPlayer.username
         this.ctx.font = '20px Arial'
