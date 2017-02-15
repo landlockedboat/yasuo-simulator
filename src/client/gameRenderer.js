@@ -46,10 +46,12 @@ module.exports =
         this.ctx.lineWidth = 5
 
         this.ctx.font = '20px Arial'
-        this.ctx.textAlign = 'center'
+        this.ctx.textAlign = 'left'
 
         if (client.isInDebugMode) {
-          this.ctx.fillText('DEBUG MODE (PRESS 1 TO EXIT)', 50, 50)
+          this.ctx.fillText('DEBUG MODE (PRESS 1 TO EXIT)', 25, 50)
+          this.ctx.fillText(`PING: ${client.ping}`, 25, 75)
+          this.ctx.fillText(`CLOCK DIFF: ${client.clockDiff}`, 25, 100)
           this.ctx.strokeRect(player.pos.x - 25, player.pos.y - 25, 50, 50)
         }
 
