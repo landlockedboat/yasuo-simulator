@@ -49,7 +49,7 @@ module.exports =
         this.ctx.textAlign = 'center'
 
         if (client.isInDebugMode) {
-          this.ctx.fillText('DEBUG', 50, 50)
+          this.ctx.fillText('DEBUG MODE (PRESS 1 TO EXIT)', 50, 50)
           this.ctx.strokeRect(player.pos.x - 25, player.pos.y - 25, 50, 50)
         }
 
