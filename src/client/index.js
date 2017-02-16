@@ -74,7 +74,7 @@ socket.on('connect', function () {
       showCancelButton: false,
       animation: 'slide-from-top'
     }, function (inputValue) {
-      myUsername = inputValue
+      myUsername = "yasuo's apprentice, " + inputValue.substring(0, 20)
       socket.emit('player:setusername', myUsername)
     })
   })
