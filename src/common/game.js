@@ -9,9 +9,11 @@ module.exports = class Game {
 
   // forEachPlayerCallback is optional
   logic (delta, forEachPlayerCallback) {
+    this.hasAirbonePlayers = false
     for (let playerId in this.players) {
       var player = this.players[playerId]
       if (player.isAirbone) {
+        this.hasAirbonePlayers = true
         player.airboneTime -= delta
         if (player.airboneTime <= 0) {
           this.players[playerId].isAirbone = false
