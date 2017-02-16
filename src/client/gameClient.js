@@ -1,7 +1,6 @@
 var deepcopy = require('deepcopy')
 var Game = require('../common/game.js')
 var engine = require('../common/engine.js')
-const constants = require('../common/constants.js')
 
 module.exports =
   class GameClient extends Game {
@@ -10,6 +9,9 @@ module.exports =
       // This players will be the ones being rendered
       this.virtualPlayers = {}
       this.isInDebugMode = false
+      // Virtual players variables
+      this.virtualPlayerSpeed = 300
+      this.virtualPlayerCloseEnough = 5
     }
 
     onGameInit (players, myPlayerId) {
@@ -39,7 +41,7 @@ module.exports =
       // let playerVel = this.players[playerId].velocity
       let vPlayerPos = this.virtualPlayers[playerId].pos
       vPlayerPos = engine.vectorMoveTo(vPlayerPos, playerPos,
-        constants.MAX_SPEED * delta, 5)
+        this.virtualPlayerSpeed * delta, this.virtualPlayerCloseEnough)
       this.virtualPlayers[playerId].pos = vPlayerPos
     }
 
