@@ -89,8 +89,10 @@ function tornadoLogic (delta) {
     game.tornados.forEach((tornado) => {
       var torPos = tornado.pos
       if (utils.sqDist(playPos, torPos) < sumRadSq) {
-        // We don't want to collide with ourselves, do we?
-        if (tornado.prop !== playerId) {
+        // We check if the player is
+        //  1. Not ourselves
+        //  2. Alive
+        if (tornado.prop !== playerId && !game.players[playerId].isDead) {
           airbone = true
           game.players[playerId].airboneTime = constants.AIRBONE_TIME
           game.players[playerId].isAirbone = true
