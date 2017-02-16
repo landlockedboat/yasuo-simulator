@@ -1,5 +1,4 @@
 var utils = require('./utils.js')
-var deepcopy = require('deepcopy')
 
 // Inputs
 exports.Inputs =
@@ -27,7 +26,64 @@ exports.Vector =
       this.x = x
       this.y = y
     }
+
+    clone (vector) {
+      this.x = vector.x
+      this.y = vector.y
+    }
+
+    damp (dampFactor) {
+      this.x *= dampFactor
+      this.y *= dampFactor
+    }
+
+    // Calculus-intensive function
+    magnitude () {
+      return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2))
+    }
+
+    // Calculus-intensive function
+    normalize () {
+      let len = this.magnitude()
+      if (len !== 0) {
+        this.x /= len
+        this.y /= len
+      } else {
+        this.x = 0
+        this.y = 0
+      }
+    }
+
+    times (num) {
+      this.x *= num
+      this.y *= num
+    }
+
+    sum (vector) {
+      this.x += vector.x
+      this.y += vector.y
+    }
+
+    moveTo (vector2, ammount, closeEnough) {
+      let delta = exports.Vector.vectorBetween(this, vector2)
+
+      if (delta.magnitude(delta) < closeEnough) {
+        this.x = vector2.x
+        this.y = vector2.y
+        return
+      }
+
+      delta.normalize()
+      delta.times(ammount)
+      this.sum(delta)
+    }
   }
+
+exports.Vector.vectorBetween = function (origin, destination) {
+  let dx = destination.x - origin.x
+  let dy = destination.y - origin.y
+  return new exports.Vector(dx, dy)
+}
 
 // GameObject and its children
 exports.GameObject =
@@ -50,50 +106,6 @@ exports.PlayerObject =
       this.attackInputs = new exports.AttackInputs()
     }
   }
-
-exports.vectorDamp = function (vector, dampFactor) {
-  vector.x *= dampFactor
-  vector.y *= dampFactor
-}
-
-exports.vectorBetween = function (origin, destination) {
-  let dx = destination.x - origin.x
-  let dy = destination.y - origin.y
-  return new exports.Vector(dx, dy)
-}
-
-exports.vectorMagnitude = function (vector) {
-  return Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2))
-}
-
-// Caution! Calculus-intensive function! Use at your own risk!
-exports.vectorNormalize = function (vector) {
-  let len = exports.vectorMagnitude(vector)
-  if (len !== 0) {
-    return new exports.Vector(vector.x / len, vector.y / len)
-  } else {
-    return new exports.Vector()
-  }
-}
-
-exports.vectorTimes = function (vector, num) {
-  return new exports.Vector(vector.x * num, vector.y * num)
-}
-
-exports.vectorSum = function (vector1, vector2) {
-  return new exports.Vector(vector1.x + vector2.x, vector1.y + vector2.y)
-}
-
-exports.vectorMoveTo = function (vector1, vector2, ammount, closeEnough) {
-  let delta = exports.vectorBetween(vector1, vector2)
-  if (exports.vectorMagnitude(delta) < closeEnough) {
-    return deepcopy(vector2)
-  }
-
-  delta = exports.vectorNormalize(delta)
-  delta = exports.vectorTimes(delta, ammount)
-  return exports.vectorSum(vector1, delta)
-}
 
 exports.applySpeed = function (object, delta) {
   object.pos.x += object.velocity.x * delta

@@ -20,6 +20,12 @@ module.exports =
       this.players = players
       // We don't want out virtual players to behave exactly like our players!
       this.virtualPlayers = deepcopy(players)
+      // Create vector objects for the virtual players
+      for (let vPlayId in this.virtualPlayers) {
+        let vec = new engine.Vector()
+        vec.clone(this.virtualPlayers[vPlayId].pos)
+        this.virtualPlayers[vPlayId].pos = vec
+      }
       this.myPlayerId = myPlayerId
       this.isRunning = true
     }
@@ -30,6 +36,9 @@ module.exports =
       }
       this.players[player.id] = player
       this.virtualPlayers[player.id] = deepcopy(player)
+      let vec = new engine.Vector()
+      vec.clone(player.pos)
+      this.virtualPlayers[player.id].pos = vec
     }
 
     getMyPlayer () {
@@ -39,10 +48,10 @@ module.exports =
     moveVirtualPlayer (delta, playerId) {
       let playerPos = this.players[playerId].pos
       // let playerVel = this.players[playerId].velocity
-      let vPlayerPos = this.virtualPlayers[playerId].pos
-      vPlayerPos = engine.vectorMoveTo(vPlayerPos, playerPos,
-        this.virtualPlayerSpeed * delta, this.virtualPlayerCloseEnough)
-      this.virtualPlayers[playerId].pos = vPlayerPos
+      this.virtualPlayers[playerId].pos.moveTo(
+        playerPos,
+        this.virtualPlayerSpeed * delta,
+        this.virtualPlayerCloseEnough)
     }
 
     logic (delta) {
