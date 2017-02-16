@@ -56,20 +56,20 @@ module.exports =
         }
 
         var currentSprite = this.playerSprite
-        if (vPlayer.isDead) {
+        if (player.isDead) {
           currentSprite = imgdye(currentSprite, '#FF0000', 0.5)
-        } else if (vPlayer.isAirbone) {
+        } else if (player.isAirbone) {
           currentSprite = imgdye(currentSprite, '#0000FF', 0.5)
-          airbonePlayer = vPlayer
+          airbonePlayer = player
         }
         this.ctx.drawImage(currentSprite, vPpos.x - 25, vPpos.y - 25, 50, 50)
 
-        var username = vPlayer.username
+        var username = player.username
         this.ctx.font = '20px Arial'
         this.ctx.textAlign = 'center'
         this.ctx.fillText(username, vPpos.x, vPpos.y - 50)
 
-        var score = vPlayer.score
+        var score = player.score
         this.ctx.font = '20px Arial'
         this.ctx.textAlign = 'center'
         this.ctx.fillText(`kills: ${score}`, vPpos.x, vPpos.y + 50)
