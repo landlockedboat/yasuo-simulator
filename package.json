@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "npm run test",
     "build": "browserify src/client/index.js -o public/bundle.js",
-    "force-build" : "browserify src/client/index.js -o public/bundle.js",
+    "force-build": "browserify src/client/index.js -o public/bundle.js",
     "watch": "chokidar 'src/**/*.js' -c 'npm run build'",
     "fix": "standard --fix src/**/*.js",
     "test": "standard src/**/*.js",
