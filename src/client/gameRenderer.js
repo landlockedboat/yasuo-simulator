@@ -85,17 +85,18 @@ module.exports =
     render (delta, client) {
       // Repaint the background
       this.renderBackground()
-      // Render some debug info if in debug mode
-      if (client.isInDebugMode) {
-        this.ctx.fillText('DEBUG MODE (PRESS 1 TO EXIT)', 25, 50)
-        this.ctx.fillText(`PING: ${client.ping}`, 25, 75)
-        this.ctx.fillText(`CLOCK DIFF: ${client.clockDiff}`, 25, 100)
-      }
       // Render the player images
       for (let playerId in client.players) {
         const vPlayer = client.virtualPlayers[playerId]
         const player = client.players[playerId]
         this.renderPlayer(client, vPlayer, player)
+      }
+      // Render some debug info if in debug mode
+      if (client.isInDebugMode) {
+        this.ctx.textAlign = 'left'
+        this.ctx.fillText('DEBUG MODE (PRESS 1 TO EXIT)', 25, 50)
+        this.ctx.fillText(`PING: ${client.ping}`, 25, 75)
+        this.ctx.fillText(`CLOCK DIFF: ${client.clockDiff}`, 25, 100)
       }
       // Render the PRESS R! text
       const myPlayer = client.players[client.myPlayerId]
