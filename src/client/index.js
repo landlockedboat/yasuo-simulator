@@ -122,8 +122,9 @@ socket.on('connect', function () {
 })
 
 function onClick (event) {
-  // we are not using this for the time being
-  // socket.emit('player:click', renderer.mousePos)
+  // Binding Q to click
+  myAttackInputs.Q_KEY = true
+  socket.emit('player:attack', myAttackInputs, renderer.mousePos)
 }
 
 function updateInputs () {
