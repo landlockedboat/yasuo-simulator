@@ -12,4 +12,4 @@ exports.PLAYER_RADIUS = 25
 exports.AIRBONE_TIME = 1
 // Tornados
 exports.TORNADO_RADIUS = 10
-exports.TORNADO_SPEED = 1
+exports.TORNADO_SPEED = 500
