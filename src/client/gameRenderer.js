@@ -21,6 +21,7 @@ module.exports =
           y: evt.clientY - rect.top
         }
       }.bind(this), false)
+      this.currentRotation = 0
     }
 
     registerOnClickCallback (onClickCallback) {
@@ -47,22 +48,33 @@ module.exports =
       // Cache the player's positions
       const vPos = vPlayer.pos
       const pPos = player.pos
+      // For rotating stuff
+      this.ctx.save()
+      // Move the context to the player's sprite origin
+      // This is for executing rotations effectively.
+      this.ctx.translate(vPos.x, vPos.y)
       // Tint the sprite based on the player state
       if (player.isDead) {
         currentSprite = imgdye(currentSprite, '#FF0000', 0.5)
       } else if (player.isAirbone) {
+        // Airbone state
+        this.ctx.rotate(this.currentRotation)
         currentSprite = imgdye(currentSprite, '#0000FF', 0.5)
       }
       // Draw the actual player sprite
-      this.ctx.drawImage(currentSprite, vPos.x - 25, vPos.y - 25, 50, 50)
+      this.ctx.drawImage(currentSprite, -25, -25, 50, 50)
       // Draw the username above the player
-      this.ctx.fillText(player.username, vPos.x, vPos.y - 50)
+      this.ctx.fillText(player.username, 0, -50)
       // Draw the score
-      this.ctx.fillText(`kills: ${player.score}`, vPos.x, vPos.y + 50)
+      this.ctx.fillText(`kills: ${player.score}`, 0, 50)
+      // Reset the context rotation and coordinates
+      this.ctx.restore()
       // Draw the player's server position if in debug mode
       if (client.isInDebugMode) {
         this.ctx.strokeRect(pPos.x - 25, pPos.y - 25, 50, 50)
       }
+      // Increase the rotation for animating the airbone state
+      this.currentRotation += 0.1
     }
 
     renderTornado (tornado) {
