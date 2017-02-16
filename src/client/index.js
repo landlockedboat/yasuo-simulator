@@ -159,10 +159,8 @@ function updateInputs () {
 
   // Check for debug mode on or off
   if (kbd.isKeyDown(48)) {
-    console.log('in deb')
     game.isInDebugMode = true
   } else if (kbd.isKeyDown(49)) {
-    console.log('out deb')
     game.isInDebugMode = false
   }
 }
